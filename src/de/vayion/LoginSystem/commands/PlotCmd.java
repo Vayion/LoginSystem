@@ -44,6 +44,7 @@ public class PlotCmd implements CommandExecutor {
 				ListCmd.outputPage(sender, list, main);
 			}
 			else if(args.length == 2) {
+				args[0] = "plots";
 				ListCmd.outputPage(sender, args, main);
 			}
 			else {

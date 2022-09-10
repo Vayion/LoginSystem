@@ -2,10 +2,7 @@ package de.vayion.LoginSystem;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import de.vayion.LoginSystem.commands.AddAdmin;
-import de.vayion.LoginSystem.commands.AddUser;
 import de.vayion.LoginSystem.commands.ClaimCmd;
-import de.vayion.LoginSystem.commands.DeleteUser;
 import de.vayion.LoginSystem.commands.FindCmd;
 import de.vayion.LoginSystem.commands.InspectCmd;
 import de.vayion.LoginSystem.commands.ListCmd;
@@ -17,6 +14,7 @@ import de.vayion.LoginSystem.commands.SetLocationCmd;
 import de.vayion.LoginSystem.commands.UserCmd;
 import de.vayion.LoginSystem.commands.VisitCommand;
 import de.vayion.LoginSystem.commands.VisitCommand.Target;
+import de.vayion.LoginSystem.groups.GroupMain;
 import de.vayion.LoginSystem.idManagement.IDMain;
 import de.vayion.LoginSystem.idManagement.IDStorageManager;
 import de.vayion.LoginSystem.idManagement.RegistryManager;
@@ -33,6 +31,7 @@ public class Main extends JavaPlugin {
 	private InterfaceMain interfaceMain;
 	private PlotListeners plotListeners;
 	private IDStorageManager idStorageManager;
+	private GroupMain groupMain;
 	
 	@Override
 	public void onEnable() {
@@ -64,6 +63,7 @@ public class Main extends JavaPlugin {
 		locationManager = new LocationManager(this);
 		interfaceMain = new InterfaceMain(this);
 		idStorageManager = new IDStorageManager(this);
+		groupMain = new GroupMain(this);
 		
 	}
 
@@ -98,6 +98,10 @@ public class Main extends JavaPlugin {
 	
 	public InterfaceMain getInterfaceMain() {
 		return interfaceMain;
+	}
+	
+	public GroupMain getGroupMain() {
+		return groupMain;
 	}
 	
 	

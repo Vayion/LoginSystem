@@ -2,7 +2,6 @@ package de.vayion.LoginSystem.plotManagement;
 
 import java.util.ArrayList;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -19,8 +18,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerTakeLecternBookEvent;
 import org.bukkit.event.world.StructureGrowEvent;
-import org.bukkit.map.MinecraftFont;
 
 import de.vayion.LoginSystem.Main;
 import de.vayion.LoginSystem.commands.ToggleeditCmd;
@@ -97,6 +96,9 @@ public class PlotListeners implements Listener{
 				case TRAPPED_CHEST:break;
 				case BREWING_STAND:break;
 				case ENCHANTING_TABLE:break;
+				case BARREL: break;
+				case REPEATER: break;
+				case COMPARATOR: break;
 				
 				case NOTE_BLOCK:
 					Block blocky = block.getWorld().getBlockAt(block.getLocation().clone().add(0, -1, 0));
@@ -185,6 +187,27 @@ public class PlotListeners implements Listener{
 		if(world==null) {return;}
 		if(event.getLocation().getWorld().equals(world)) {
 			event.setCancelled(true);
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	public void onPlayerTakeLecternBookEvent(PlayerTakeLecternBookEvent event) {
+		Player player = event.getPlayer();
+		if(players.contains(player)) {return;}
+		if(player!=null) {
+			if(main.getIDMain().playerIsLoggedIn(player)) {
+				if(player.getLocation().getWorld().equals(main.getPlotManager().getPlotWorld())) {
+					if(!main.getIDMain().isAllowed(event.getLectern().getLocation(), event.getPlayer())) {
+						event.setCancelled(true);
+						player.sendMessage(ChatColor.RED+"Du musst auf deinem eigenen Grundstück stehen um dies zu tun.");
+					}	
+				}
+			}
+			else {
+				event.setCancelled(true);
+			}
 		}
 	}
 	

@@ -21,6 +21,7 @@ commands:
   inspect:
   toggleedit:
   finden:
+  group:
 
 permissions:
   login.*:

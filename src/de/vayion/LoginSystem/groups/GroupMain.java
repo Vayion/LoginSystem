@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import de.vayion.LoginSystem.Main;
 import de.vayion.LoginSystem.commands.GroupCmd;
+import de.vayion.LoginSystem.idManagement.UserProfile;
 
 public class GroupMain {
 	
@@ -22,17 +23,38 @@ public class GroupMain {
 			return false;
 		}
 		else {
-			groups.put(name.toLowerCase(), new Group(name));
+			groups.put(name.toLowerCase(), new Group(name, this));
 			return true;
 		}
 	}
 	
 	private void loadGroups() {}
 	
+	public boolean removeUserFromGroup(String userID, String groupName) {
+		if(groups.containsKey(groupName.toLowerCase())) {
+			UserProfile user = main.getIDMain().getUser(userID);
+			if(user == null) {
+				return false;
+			}
+			else {
+				return groups.get(groupName.toLowerCase()).removeProfile(user);
+			}
+		} 
+		else {
+			return false;
+		}
+	}
+	
 	public boolean addUserToGroup(String userID, String groupName) {
 		if(groups.containsKey(groupName.toLowerCase())) {
-			groups.get(groupName.toLowerCase()).addProfile(main.getIDMain().getUser(userID));
-			return true;
+			UserProfile user = main.getIDMain().getUser(userID);
+			if(user == null) {
+				return false;
+			}
+			else {
+				groups.get(groupName.toLowerCase()).addProfile(user);
+				return true;
+			}
 		} 
 		else {
 			return false;
@@ -43,4 +65,16 @@ public class GroupMain {
 		return groups;
 	}
 	
+	public Main getMain() {
+		return main;
+	}
+	
+	public Group getGroup(String name) {
+		if(groups.containsKey(name)) {
+			return groups.get(name);
+		}
+		else {
+			return null;
+		}
+	}
 }

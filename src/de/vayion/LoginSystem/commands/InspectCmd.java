@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import de.vayion.LoginSystem.Main;
+import de.vayion.LoginSystem.groups.Group;
 import de.vayion.LoginSystem.idManagement.UserProfile;
 import de.vayion.LoginSystem.plotManagement.Plot;
 
@@ -97,12 +98,18 @@ public class InspectCmd implements CommandExecutor {
 	public static void handleProfileInspect(String arg, CommandSender sender, Main main) {
 		UserProfile profile = main.getIDMain().getUser(arg);
 		if(profile==null) {sender.sendMessage(ChatColor.RED+"Not a valid ID."); return;}
-		
+		Group group = profile.getGroup();
 		sender.sendMessage(ChatColor.GREEN+"Information for Userprofile "+profile.getID()+":");
 		sender.sendMessage(ChatColor.YELLOW+"------------");
 		sender.sendMessage("- username: "+profile.getName());
 		sender.sendMessage("- admin: "+profile.isAdmin());
 		sender.sendMessage("- online: "+profile.isOccupied());
+		if(group != null) {
+			sender.sendMessage("- part of group: "+group.getName());
+		}
+		else {
+			sender.sendMessage("- part of no group");
+		}
 		sender.sendMessage(ChatColor.YELLOW+"------------");
 		if(profile.isOccupied()) {
 			Player player = main.getIDMain().getPlayerByID(profile.getID());

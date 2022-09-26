@@ -237,7 +237,7 @@ public class PlotListeners implements Listener{
 	public void onStructureGrowth(StructureGrowEvent event) {
 		if(main.getPlotManager().getPlotWorld()!=null&&main.getPlotManager().getPlotWorld().equals(event.getLocation().getWorld())) {
 			Plot plot = main.getPlotManager().getPlotByLoc(event.getLocation());
-			if(plot==null) {return;}
+			if(plot==null) {event.setCancelled(true);;}
 			for (int i = 0; i<event.getBlocks().size();i++) {
 				if(!plot.isAllowed(event.getBlocks().get(i).getLocation())) {
 					event.getBlocks().get(i).setType(Material.AIR);

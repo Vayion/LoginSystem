@@ -74,6 +74,7 @@ public class Main extends JavaPlugin {
 		iDMain.logoutAll();
 		iDMain.saveRegistry();
 		idStorageManager.saveProfileRegister(iDMain.getAllUsers(false));
+		groupMain.save();
 	}
 	
 	

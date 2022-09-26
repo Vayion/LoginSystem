@@ -14,6 +14,7 @@ import org.bukkit.util.Vector;
 
 import de.vayion.LoginSystem.Utils;
 import de.vayion.LoginSystem.Utils.Mode;
+import de.vayion.LoginSystem.groups.Group;
 import de.vayion.LoginSystem.ingameInterface.InterfaceMain;
 import de.vayion.LoginSystem.plotManagement.DummyPlot;
 import de.vayion.LoginSystem.plotManagement.Plot;
@@ -42,6 +43,7 @@ public class UserProfile {
 	protected Location spawnpoint;
 	
 	protected Plot plot;
+	protected Group group;
 	
 	
 	/**
@@ -57,6 +59,8 @@ public class UserProfile {
 			id = Utils.getString(6, Mode.ALPHANUMERIC);
 		}
 		occupied = false;
+		
+		group =null;
 		plot = new DummyPlot(-1, iDMain.getMain().getPlotManager());
 		registerFile();
 	}
@@ -69,6 +73,7 @@ public class UserProfile {
 		System.out.println("Imported: "+id);
 		occupied = false;
 		
+		group = null;
 		registerFile();
 	}
 	
@@ -275,5 +280,12 @@ public class UserProfile {
 			config.set("plot", plot.getID());
 		}
 		saveData();
+	}
+	
+	public Group getGroup() {
+		return group;
+	}
+	public void setGroup(Group group) {
+		this.group = group;
 	}
 }

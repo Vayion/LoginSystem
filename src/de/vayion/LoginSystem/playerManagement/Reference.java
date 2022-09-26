@@ -85,7 +85,10 @@ public class Reference extends Element {
 	public boolean isAllowed(Location loc, Player player) {
 		if(player.equals(this.player)) {
 			if(!loggedIn) {return false;}
-			return userProfile.getPlot().isAllowed(loc);
+			boolean group = false;
+			if(userProfile.getGroup()!=null) {group = true;}
+			if(group) {group = userProfile.getGroup().isAllowed(loc);}
+			return (userProfile.getPlot().isAllowed(loc)||group);
 		}
 		return next.isAllowed(loc, player);
 	}

@@ -121,13 +121,14 @@ public class GroupCmd implements CommandExecutor {
 				sender.sendMessage(ChatColor.RED+"Correct use: /group unassign [UserID] [GroupName].");
 			}
 			break;
-		case "setPosition":
+		case "setposition":
 			if(!isPlayer) {sender.sendMessage(ChatColor.RED+"You can't do that in console."); return false;}
 			if(args.length == 3) {
 				String id = args[1];
 				Group group = groupMain.getGroup(id);
 				if(group == null) {
 					sender.sendMessage(ChatColor.RED+"Please enter a valid group.");
+					return false;
 				}
 				int one;
 				try {

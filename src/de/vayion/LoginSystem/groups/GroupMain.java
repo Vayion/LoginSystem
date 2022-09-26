@@ -1,6 +1,8 @@
 package de.vayion.LoginSystem.groups;
 
+import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 
 import de.vayion.LoginSystem.Main;
 import de.vayion.LoginSystem.commands.GroupCmd;
@@ -9,12 +11,20 @@ import de.vayion.LoginSystem.idManagement.UserProfile;
 public class GroupMain {
 	
 	private HashMap<String, Group> groups;
+	private GroupRegister groupRegister;
 	private Main main;
+	
+	private File dir;
 	
 	public GroupMain(Main main) {
 		this.main = main;
 		groups = new HashMap<String,Group>();
 		main.getCommand("group").setExecutor(new GroupCmd(this));
+
+		dir = new File(main.getDataFolder().getPath()+System.getProperty("file.separator")+"groups");
+		dir.mkdir();
+		groupRegister = new GroupRegister(this);
+		
 	}
 	
 	
@@ -28,7 +38,13 @@ public class GroupMain {
 		}
 	}
 	
-	private void loadGroups() {}
+	public void save() {
+		for (Map.Entry<String, Group> set :
+            groups.entrySet()) {
+			set.getValue().saveGroup();
+       }
+		groupRegister.saveProfileRegister(groups);
+	}
 	
 	public boolean removeUserFromGroup(String userID, String groupName) {
 		if(groups.containsKey(groupName.toLowerCase())) {
@@ -70,11 +86,15 @@ public class GroupMain {
 	}
 	
 	public Group getGroup(String name) {
-		if(groups.containsKey(name)) {
-			return groups.get(name);
+		if(groups.containsKey(name.toLowerCase())) {
+			return groups.get(name.toLowerCase());
 		}
 		else {
 			return null;
 		}
+	}
+	
+	public File getDir() {
+		return dir;
 	}
 }

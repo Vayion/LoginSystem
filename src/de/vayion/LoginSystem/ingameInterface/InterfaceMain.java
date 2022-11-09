@@ -1,23 +1,25 @@
 package de.vayion.LoginSystem.ingameInterface;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import de.vayion.LoginSystem.Main;
+import de.vayion.LoginSystem.idManagement.UserProfile;
 
 public class InterfaceMain {
 	
-	private ItemStack menu, close, plot, home, farm, sethome, grayGlass, city;
+	private ItemStack menu, close, plot, home, farm, sethome, grayGlass, city, visit;
 	private Main main;
-	private String inventoryName = "Menü";
+	private String menuInventoryName = "Menü";
+	private String visitInventoryName = "Besuch-Menü";
 	
 	public InterfaceMain(Main main) {
 		this.main = main;
@@ -27,6 +29,7 @@ public class InterfaceMain {
 		menu = generateMenu();
 		close = generateClose();
 		plot = generatePlot();
+		visit = generateVisit();
 		home = generateHome();
 		sethome = generateSetHome();
 		farm = generateFarm();
@@ -35,17 +38,38 @@ public class InterfaceMain {
 	}
 	
 	public void openMenuInterface(Player player) {
-		Inventory inv = Bukkit.createInventory(player, 5*9, inventoryName);
+		Inventory inv = Bukkit.createInventory(player, 5*9, menuInventoryName);
 		
 		for (int i = 0; i < inv.getSize(); i++) {
 			inv.setItem(i, grayGlass.clone());
 		}
 		
-		inv.setItem(19, plot);
+		inv.setItem(19, visit);
 		inv.setItem(21, home);
 		inv.setItem(23, farm);
 		inv.setItem(25, city);
 		inv.setItem(40, close);
+		
+		player.openInventory(inv);
+		player.updateInventory();
+	}
+	
+	public void openVisitInterface(Player player) {
+		Inventory inv = Bukkit.createInventory(player, 5*9, visitInventoryName);
+		
+		for (int i = 0; i < inv.getSize(); i++) {
+			inv.setItem(i, grayGlass.clone());
+		}
+		
+
+		ArrayList<Player> players = new ArrayList<Player>();
+		Bukkit.getOnlinePlayers().forEach(tempPlayer -> players.add(tempPlayer));
+				
+		for(int i = 0; i<players.size(); i++) {
+			if(i<inv.getSize()) {
+				inv.setItem(i, generateVisitItem(players.get(i).getDisplayName(), players.get(i).getUniqueId()));
+			}
+		}
 		
 		player.openInventory(inv);
 		player.updateInventory();
@@ -178,26 +202,64 @@ public class InterfaceMain {
 	}
 	
 	/**
+	 * generates Visit Menu Item
+	 * @return Visit Menu Item
+	 */
+	public static ItemStack generateVisit() {
+		ItemStack item;
+		item = new ItemStack(Material.FEATHER);
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName(ChatColor.GREEN+"Besuchen");
+		ArrayList<String> list = new ArrayList<String>();
+		list.add(ChatColor.YELLOW+"Klicke hier um andere Spieler zu besuchen.");
+		meta.setLore(list);
+		item.setItemMeta(meta);
+		return item;
+	}
+	
+	/**
+	 * generates player item
+	 * @return player item
+	 */
+	public static ItemStack generateVisitItem(String name, UUID uuid) {
+		ItemStack item = new ItemStack(Material.MAP, 1);
+		ItemMeta itemMeta = item.getItemMeta();
+		itemMeta.setDisplayName(ChatColor.GREEN+name);
+		ArrayList<String >itemLore = new ArrayList<String>();
+		itemLore.add(uuid.toString());
+		itemMeta.setLore(itemLore);
+		item.setItemMeta(itemMeta);
+		return item;
+	}
+	
+	/**
 	 * handles the player clicking an item. called by EventListeners
 	 * @param item item that needs to be handled
 	 * @param player player that clicked an item
 	 * @return returns if the event shall be cancelled
 	 */
 	public boolean handleItemStack(String inventoryName, ItemStack item, Player player) {
+		if(item==null) {
+			return false;
+		}
 		if(item.equals(menu)) {
 			openMenuInterface(player);
 			return true;
 		}
-		if((inventoryName==null)||(!inventoryName.equals(this.inventoryName))) {
+		if(inventoryName==null||item==null){
 			return false;
 		}
-		else {	
+		else if(inventoryName.equals(this.menuInventoryName)) {	
 			if(item.equals(close)) {
 				player.closeInventory();
 			}
 			else if(item.equals(plot)) {
 				player.closeInventory();
 				player.sendMessage(ChatColor.GRAY+"Dies ist noch nicht erhältlich.");
+			}
+			else if(item.equals(visit)) {
+				player.closeInventory();
+				openVisitInterface(player);
 			}
 			else if(item.equals(home)) {
 				player.closeInventory();
@@ -219,10 +281,37 @@ public class InterfaceMain {
 			}
 			return true;
 		}
+		else if (inventoryName.equals(visitInventoryName)) {
+			if(item.getType().equals(Material.MAP)) {
+				Player tempPlayer;
+				UserProfile userProfile = null;
+				try{
+					tempPlayer = Bukkit.getPlayer(UUID.fromString(item.getItemMeta().getLore().get(0)));
+					userProfile = main.getIDMain().getPlayerProfile(tempPlayer);
+				}
+				catch(Exception e) {
+					player.sendMessage(ChatColor.RED+"Ein Fehler ist aufgetreten.");
+					return true;
+				}
+				if(userProfile!=null) {
+					if(userProfile.getPlot()==null || !userProfile.getPlot().isReady()) {
+						player.sendMessage(ChatColor.RED+"Dieser Spieler hat kein Grundstück.");
+						return true;
+					}
+					player.teleport(userProfile.getPlot().getHome());
+					String name[] = userProfile.getName().split(" ", 2);
+					player.sendMessage(ChatColor.YELLOW+"Du besuchst jetzt "+name[0]+".");
+				}
+				player.closeInventory();
+			}
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public String getInventoryName() {
-		return inventoryName;
+		return menuInventoryName;
 	}
 	
 	public ItemStack getCity() {

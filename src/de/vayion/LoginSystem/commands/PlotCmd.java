@@ -189,6 +189,25 @@ public class PlotCmd implements CommandExecutor {
 			}
 			break;
 			
+		case "generate":
+			int i = 0;
+			try {
+				i = Integer.parseInt(args[1]);
+			} catch (Exception e) {
+				sender.sendMessage(ChatColor.GRAY+"Not a valid id.");
+				return false;
+			}
+			if(main.getPlotManager().getPlotsSize()>i) {
+				if(main.getPlotManager().getPlotByID(i).generateBorder()) {
+					sender.sendMessage(ChatColor.GREEN+"Sucessfully generated Borders of Plot Nr."+i+".");
+				}
+				else {
+					sender.sendMessage(ChatColor.GRAY+"Plot doesn't have two locations as well as a home set.");
+				}
+				
+			}
+			break;
+			
 		default:
 			sender.sendMessage(ChatColor.GRAY+"Unknown Command. Known subcommands are: ");
 			sender.sendMessage(ChatColor.GRAY+"set/add/delete/inspect/list/get/setworld/sethome");

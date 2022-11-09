@@ -108,7 +108,7 @@ public class PlotListeners implements Listener{
 						if(plot.isClaimed()) {
 							if(main.getIDMain().isOwnPlot(plot, player)) {player.sendMessage(ChatColor.GREEN+"Dieses Grundstück gehört dir schon.");}
 							else {
-								player.sendMessage(ChatColor.RED+"Dieses Grundstück gehört schon jemanden.");
+								player.sendMessage(ChatColor.RED+"Dieses Grundstück gehört schon "+plot.getClaimer().getName()+".");
 							}
 							return;
 						}

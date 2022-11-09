@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import de.vayion.LoginSystem.Utils;
 import de.vayion.LoginSystem.idManagement.UserProfile;
 
 public class Plot {
@@ -93,12 +94,19 @@ public class Plot {
 				maxZ = pos2.getBlockZ();
 			}
 			ready = true;
-			if(home==null) {ready = false;}
+			if(home==null) {ready = false;return;}
 			Bukkit.broadcastMessage(ChatColor.GREEN+"Plot "+id+" is ready.");
 		}
 		else {
 			ready = false;
 		}
+	}
+	
+	public boolean generateBorder() {
+		if(ready) {
+			Utils.createPlotBorders(minX, maxX, minZ, maxZ, home.getWorld());
+		}
+		return ready;
 	}
 	
 	public boolean isAllowed(Location loc) {
@@ -135,6 +143,7 @@ public class Plot {
 	public boolean isClaimed() {
 		return claimed;
 	}
+	
 	
 	public boolean getClaimBlockPlot(Location loc) {
 		if(pos1!=null&&pos2!=null) {

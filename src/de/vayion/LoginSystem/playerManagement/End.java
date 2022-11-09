@@ -63,4 +63,9 @@ public class End extends Element {
 
 	@Override
 	public void sendHome(Player player) {}
+
+	@Override
+	public UserProfile getPlayerProfile(Player player) {
+		return null;
+	}
 }

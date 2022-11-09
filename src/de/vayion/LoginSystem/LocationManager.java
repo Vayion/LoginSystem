@@ -3,6 +3,7 @@ package de.vayion.LoginSystem;
 import java.io.File;
 import java.io.IOException;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -19,6 +20,8 @@ public class LocationManager {
 	
 	public LocationManager(Main main) {
 		this.main = main;
+		
+		System.out.println("Debug");
 		
 		file = new File(main.getDataFolder(), "warpLocations.yml");
 		config = (FileConfiguration)YamlConfiguration.loadConfiguration(file);

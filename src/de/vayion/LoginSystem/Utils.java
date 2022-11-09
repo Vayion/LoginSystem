@@ -8,6 +8,9 @@ import java.util.Collection;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.entity.Player;
 
 public class Utils {
@@ -111,5 +114,79 @@ public class Utils {
 			}
 		}
 		return false;
+	}
+	
+	public static void createPlotBorders(int minX, int maxX, int minZ, int maxZ, World world) {
+		minX--; minZ--;
+		maxX++; maxZ++;
+		for(int i = 1; i < maxX-minX; i++) {
+			try {
+				Block block1 = world.getHighestBlockAt(i+minX, maxZ).getLocation().add(0,1,0).getBlock();
+				if(!block1.getType().equals(Material.DARK_OAK_SLAB)) {
+					block1.setType(Material.DARK_OAK_SLAB);
+				}
+				Block block2 = world.getHighestBlockAt(i+minX, minZ).getLocation().add(0,1,0).getBlock();
+				if(!block2.getType().equals(Material.DARK_OAK_SLAB)) {
+					block2.setType(Material.DARK_OAK_SLAB);
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		for(int i = 1; i < maxZ-minZ; i++) {
+			try {
+				Block block1 = world.getHighestBlockAt(maxX, minZ+i).getLocation().add(0,1,0).getBlock();
+				if(!block1.getType().equals(Material.DARK_OAK_SLAB)) {
+					block1.setType(Material.DARK_OAK_SLAB);
+				}
+				Block block2 = world.getHighestBlockAt(minX, minZ+i).getLocation().add(0,1,0).getBlock();
+				if(!block2.getType().equals(Material.DARK_OAK_SLAB)) {
+					block2.setType(Material.DARK_OAK_SLAB);
+				}	
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		Block corner1 = world.getHighestBlockAt(minX, minZ);
+		try {
+			if(!corner1.getType().equals(Material.NOTE_BLOCK)) {
+				corner1.setType(Material.BARRIER);
+				corner1.getLocation().add(0, 1, 0).getBlock().setType(Material.NOTE_BLOCK);
+			}
+		}
+		catch (Exception e) {
+			// we dont handle
+		}
+		Block corner2 = world.getHighestBlockAt(maxX, minZ);
+		try {
+			if(!corner2.getType().equals(Material.NOTE_BLOCK)) {
+				corner2.setType(Material.BARRIER);
+				corner2.getLocation().add(0, 1, 0).getBlock().setType(Material.NOTE_BLOCK);
+			}
+		}
+		catch (Exception e) {
+			// we dont handle
+		}
+		Block corner3 = world.getHighestBlockAt(minX, maxZ);
+		try {
+			if(!corner3.getType().equals(Material.NOTE_BLOCK)) {
+				corner3.setType(Material.BARRIER);
+				corner3.getLocation().add(0, 1, 0).getBlock().setType(Material.NOTE_BLOCK);
+			}
+		}
+		catch (Exception e) {
+			// we dont handle
+		}
+		Block corner4 = world.getHighestBlockAt(maxX, maxZ);
+		try {
+			if(!corner4.getType().equals(Material.NOTE_BLOCK)) {
+				corner4.setType(Material.BARRIER);
+				corner4.getLocation().add(0, 1, 0).getBlock().setType(Material.NOTE_BLOCK);
+			}
+		}
+		catch (Exception e) {
+			// we dont handle
+		}
+		
 	}
 }

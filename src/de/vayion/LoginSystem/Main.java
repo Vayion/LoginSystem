@@ -57,10 +57,10 @@ public class Main extends JavaPlugin {
 		
 		this.getServer().getPluginManager().registerEvents(new ConnectionListeners(this), this);
 		this.getServer().getPluginManager().registerEvents(plotListeners = new PlotListeners(this), this);
+		locationManager = new LocationManager(this);
 		iDMain = new IDMain(this);
 		plotManager = new PlotManager(this);
 		registryManager = new RegistryManager(this);
-		locationManager = new LocationManager(this);
 		interfaceMain = new InterfaceMain(this);
 		idStorageManager = new IDStorageManager(this);
 		groupMain = new GroupMain(this);

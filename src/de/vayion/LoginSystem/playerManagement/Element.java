@@ -24,5 +24,7 @@ public abstract class Element {
 	public abstract boolean isOwnPlot(Plot plot, Player player);
 	public abstract Player getPlayerByID(String id);
 	
+	public abstract UserProfile getPlayerProfile(Player player);
+	
 	public abstract void sendHome(Player player);
 }

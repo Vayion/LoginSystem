@@ -147,4 +147,14 @@ public class Reference extends Element {
 		}
 	}
 
+	@Override
+	public UserProfile getPlayerProfile(Player player) {
+		if(this.player.equals(player)) {
+			return userProfile;
+		}
+		else {
+			return next.getPlayerProfile(player);
+		}
+	}
+
 }

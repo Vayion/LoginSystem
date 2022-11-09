@@ -242,4 +242,8 @@ public class IDMain {
 	public void sendHome(Player player) {
 		first.sendHome(player);
 	}
+	
+	public UserProfile getPlayerProfile(Player player) {
+		return first.getPlayerProfile(player);
+	}
 }

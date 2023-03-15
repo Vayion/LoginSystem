@@ -1,6 +1,8 @@
 package de.vayion.LoginSystem.ingameInterface;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -61,8 +63,7 @@ public class InterfaceMain {
 			inv.setItem(i, grayGlass.clone());
 		}
 		
-
-		ArrayList<Player> players = new ArrayList<Player>();
+		List<Player> players = new ArrayList<Player>();
 		Bukkit.getOnlinePlayers().forEach(tempPlayer -> players.add(tempPlayer));
 				
 		for(int i = 0; i<players.size(); i++) {

@@ -10,6 +10,7 @@ import de.vayion.LoginSystem.commands.ListUsersCmd;
 import de.vayion.LoginSystem.commands.LoginCmd;
 import de.vayion.LoginSystem.commands.LogoutCmd;
 import de.vayion.LoginSystem.commands.PlotCmd;
+import de.vayion.LoginSystem.commands.RandomLocationCmd;
 import de.vayion.LoginSystem.commands.SetLocationCmd;
 import de.vayion.LoginSystem.commands.UserCmd;
 import de.vayion.LoginSystem.commands.VisitCommand;
@@ -54,6 +55,7 @@ public class Main extends JavaPlugin {
 		this.getCommand("setLocation").setExecutor(new SetLocationCmd(this));
 		this.getCommand("logList").setExecutor(new ListCmd(this));
 		this.getCommand("inspect").setExecutor(new InspectCmd(this));
+		this.getCommand("zufall").setExecutor(new RandomLocationCmd(this));
 		
 		this.getServer().getPluginManager().registerEvents(new ConnectionListeners(this), this);
 		this.getServer().getPluginManager().registerEvents(plotListeners = new PlotListeners(this), this);

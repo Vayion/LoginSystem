@@ -49,6 +49,9 @@ public class Reference extends Element {
 					String name[] = userProfile.getName().split(" ", 2);
 					Utils.changeName(name[0], player);
 				}
+				else {
+					Utils.changeName(userProfile.getName(), player);
+				}
 				return true;
 			}
 			return false;
@@ -85,9 +88,9 @@ public class Reference extends Element {
 	public boolean isAllowed(Location loc, Player player) {
 		if(player.equals(this.player)) {
 			if(!loggedIn) {return false;}
-			boolean group = false;
-			if(userProfile.getGroup()!=null) {group = true;}
-			if(group) {group = userProfile.getGroup().isAllowed(loc);}
+			boolean group = userProfile.getGroups().stream()
+				.filter(n->n.isAllowed(loc))
+				.findFirst().isPresent();
 			return (userProfile.getPlot().isAllowed(loc)||group);
 		}
 		return next.isAllowed(loc, player);
@@ -96,7 +99,10 @@ public class Reference extends Element {
 	public boolean isInBorders(Location loc, Player player) {
 		if(player.equals(this.player)) {
 			if(!loggedIn) {return false;}
-			return userProfile.getPlot().getClaimBlockPlot(loc);
+			boolean group = userProfile.getGroups().stream()
+					.filter(n->n.isAllowed(loc))
+					.findFirst().isPresent();
+				return (userProfile.getPlot().getClaimBlockPlot(loc)||group);
 		}
 		return next.isInBorders(loc, player);
 	}

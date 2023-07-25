@@ -6,7 +6,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.ShulkerBox;
+import org.bukkit.block.data.Openable;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,12 +15,14 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTakeLecternBookEvent;
 import org.bukkit.event.world.StructureGrowEvent;
+import org.bukkit.inventory.BlockInventoryHolder;
 
 import de.vayion.LoginSystem.Main;
 import de.vayion.LoginSystem.commands.ToggleeditCmd;
@@ -90,13 +93,7 @@ public class PlotListeners implements Listener{
 				Block block = event.getClickedBlock();
 				switch(block.getType()) {
 				//a dirty solution of just returning whenever its not the listed blocks, so that I dont have to do some shit with a called function at the end
-				case CHEST:break;
-				case FURNACE:break;
-				case ANVIL:break;
-				case TRAPPED_CHEST:break;
-				case BREWING_STAND:break;
 				case ENCHANTING_TABLE:break;
-				case BARREL: break;
 				case REPEATER: break;
 				case COMPARATOR: break;
 				
@@ -122,9 +119,8 @@ public class PlotListeners implements Listener{
 					break;
 				
 				default:
-					if(block.getState()instanceof ShulkerBox) {
-						
-					}else {
+					if(!(block.getState()instanceof BlockInventoryHolder
+							||block.getBlockData()instanceof Openable)) {
 						return;	
 					}
 				}
@@ -234,10 +230,27 @@ public class PlotListeners implements Listener{
 	}
 	
 	@EventHandler
+	public void onPlayerDamagesAnimal(EntityDamageByEntityEvent event) {
+		if(event.getEntity() instanceof Player) {return; /*Handled in onPlayerDamage()*/}
+		if(event.getDamager() instanceof Player 
+				&& main.getPlotManager().getPlotWorld()!=null
+				&& event.getEntity().getLocation().getWorld().equals(main.getPlotManager().getPlotWorld())) {
+			Entity damaged = event.getEntity();
+			Player player =(Player) event.getDamager();
+//			Debug: player.sendMessage(main.getIDMain().playerIsLoggedIn(player)?"You are logged in"+(main.getIDMain().getPlayerProfile(player).getPlot().isAllowed(damaged.getLocation())?" and are allowed to punch here":""):"");
+			if(!(main.getIDMain().playerIsLoggedIn(player)&&
+					main.getIDMain().getPlayerProfile(player).getPlot().isAllowed(damaged.getLocation()))) {
+				event.setCancelled(true);
+				player.sendMessage(ChatColor.RED+"Du musst auf deinem eigenen Grundstück stehen um dies zu tun.");
+			}
+		}
+	}
+	
+	@EventHandler
 	public void onStructureGrowth(StructureGrowEvent event) {
 		if(main.getPlotManager().getPlotWorld()!=null&&main.getPlotManager().getPlotWorld().equals(event.getLocation().getWorld())) {
 			Plot plot = main.getPlotManager().getPlotByLoc(event.getLocation());
-			if(plot==null) {event.setCancelled(true);;}
+			if(plot==null) {event.setCancelled(true); return;}
 			for (int i = 0; i<event.getBlocks().size();i++) {
 				if(!plot.isAllowed(event.getBlocks().get(i).getLocation())) {
 					event.getBlocks().get(i).setType(Material.AIR);

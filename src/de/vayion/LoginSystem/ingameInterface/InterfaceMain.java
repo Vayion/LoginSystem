@@ -1,7 +1,6 @@
 package de.vayion.LoginSystem.ingameInterface;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,6 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import de.vayion.LoginSystem.Main;
 import de.vayion.LoginSystem.idManagement.UserProfile;
+import de.vayion.LoginSystem.plotManagement.Plot;
 
 public class InterfaceMain {
 	
@@ -68,7 +68,10 @@ public class InterfaceMain {
 				
 		for(int i = 0; i<players.size(); i++) {
 			if(i<inv.getSize()) {
-				inv.setItem(i, generateVisitItem(players.get(i).getDisplayName(), players.get(i).getUniqueId()));
+				UserProfile prof = main.getIDMain().getPlayerProfile(players.get(i));
+				if(prof != null) {
+					inv.setItem(i, generateVisitItem(players.get(i).getDisplayName(), ""+prof.getPlot().getID()));
+				}
 			}
 		}
 		
@@ -222,12 +225,12 @@ public class InterfaceMain {
 	 * generates player item
 	 * @return player item
 	 */
-	public static ItemStack generateVisitItem(String name, UUID uuid) {
+	public static ItemStack generateVisitItem(String name, String id) {
 		ItemStack item = new ItemStack(Material.MAP, 1);
 		ItemMeta itemMeta = item.getItemMeta();
 		itemMeta.setDisplayName(ChatColor.GREEN+name);
 		ArrayList<String >itemLore = new ArrayList<String>();
-		itemLore.add(uuid.toString());
+		itemLore.add(id.toString());
 		itemMeta.setLore(itemLore);
 		item.setItemMeta(itemMeta);
 		return item;
@@ -284,26 +287,19 @@ public class InterfaceMain {
 		}
 		else if (inventoryName.equals(visitInventoryName)) {
 			if(item.getType().equals(Material.MAP)) {
-				Player tempPlayer;
-				UserProfile userProfile = null;
-				try{
-					tempPlayer = Bukkit.getPlayer(UUID.fromString(item.getItemMeta().getLore().get(0)));
-					userProfile = main.getIDMain().getPlayerProfile(tempPlayer);
+				try {
+				Plot plot = main.getPlotManager().getPlotByID(Integer.parseInt(item.getItemMeta().getLore().get(0)));
+				if(plot.getID()==-1) {
+					player.sendMessage(ChatColor.RED+"Dieser Spieler hat kein Grundstück.");
 				}
-				catch(Exception e) {
-					player.sendMessage(ChatColor.RED+"Ein Fehler ist aufgetreten.");
-					return true;
-				}
-				if(userProfile!=null) {
-					if(userProfile.getPlot()==null || !userProfile.getPlot().isReady()) {
-						player.sendMessage(ChatColor.RED+"Dieser Spieler hat kein Grundstück.");
-						return true;
-					}
-					player.teleport(userProfile.getPlot().getHome());
-					String name[] = userProfile.getName().split(" ", 2);
-					player.sendMessage(ChatColor.YELLOW+"Du besuchst jetzt "+name[0]+".");
-				}
+				player.teleport(plot.getHome());
+				String name[] = plot.getClaimer().getName().split(" ", 2);
+				player.sendMessage(ChatColor.YELLOW+"Du besuchst jetzt "+name[0]+".");
+				
 				player.closeInventory();
+				}catch (Exception e) {
+					player.sendMessage("Irgendwas hat nicht funktioniert >:(");
+				}
 			}
 			return true;
 		}

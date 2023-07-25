@@ -86,12 +86,12 @@ public class Group {
 	}
 	
 	public void addProfile(UserProfile userprofile) {
-		userprofile.setGroup(this);
+		userprofile.getGroups().add(this);
 		profiles.add(userprofile);
 	}
 	
 	public boolean removeProfile(UserProfile userprofile) {
-		userprofile.setGroup(null);
+		userprofile.getGroups().remove(this);
 		return profiles.remove(userprofile);
 	}
 	

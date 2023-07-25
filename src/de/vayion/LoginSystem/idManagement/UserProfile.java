@@ -2,6 +2,7 @@ package de.vayion.LoginSystem.idManagement;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -43,7 +44,7 @@ public class UserProfile {
 	protected Location spawnpoint;
 	
 	protected Plot plot;
-	protected Group group;
+	protected ArrayList<Group> groups;
 	
 	
 	/**
@@ -60,7 +61,7 @@ public class UserProfile {
 		}
 		occupied = false;
 		
-		group =null;
+		groups = new ArrayList<>();
 		plot = new DummyPlot(-1, iDMain.getMain().getPlotManager());
 		registerFile();
 	}
@@ -73,7 +74,7 @@ public class UserProfile {
 		System.out.println("Imported: "+id);
 		occupied = false;
 		
-		group = null;
+		groups = new ArrayList<>();
 		registerFile();
 	}
 	
@@ -282,10 +283,10 @@ public class UserProfile {
 		saveData();
 	}
 	
-	public Group getGroup() {
-		return group;
+	public ArrayList<Group> getGroups() {
+		return groups;
 	}
-	public void setGroup(Group group) {
-		this.group = group;
-	}
+//	public void setGroup(ArrayList<Group> groups) {
+//		this.groups = groups;
+//	}
 }

@@ -1,5 +1,7 @@
 package de.vayion.LoginSystem.commands;
 
+import java.util.ArrayList;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -98,18 +100,16 @@ public class InspectCmd implements CommandExecutor {
 	public static void handleProfileInspect(String arg, CommandSender sender, Main main) {
 		UserProfile profile = main.getIDMain().getUser(arg);
 		if(profile==null) {sender.sendMessage(ChatColor.RED+"Not a valid ID."); return;}
-		Group group = profile.getGroup();
+		ArrayList<Group> groups = profile.getGroups();
 		sender.sendMessage(ChatColor.GREEN+"Information for Userprofile "+profile.getID()+":");
 		sender.sendMessage(ChatColor.YELLOW+"------------");
 		sender.sendMessage("- username: "+profile.getName());
 		sender.sendMessage("- admin: "+profile.isAdmin());
 		sender.sendMessage("- online: "+profile.isOccupied());
-		if(group != null) {
-			sender.sendMessage("- part of group: "+group.getName());
-		}
-		else {
-			sender.sendMessage("- part of no group");
-		}
+		sender.sendMessage(ChatColor.YELLOW+"------------"+
+				ChatColor.RESET+
+				(groups.isEmpty()?" \nUser is in no groups.":
+				groups.stream().map(g->g.getName()).reduce("\n ",String::concat)));
 		sender.sendMessage(ChatColor.YELLOW+"------------");
 		if(profile.isOccupied()) {
 			Player player = main.getIDMain().getPlayerByID(profile.getID());

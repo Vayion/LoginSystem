@@ -49,7 +49,7 @@ public class GroupRegister {
 		int i = 0;
 		for (Map.Entry<String, Group> set :
             groupMain.getGroups().entrySet()) {
-			config.set("group"+i+".name",set.getValue().getName());
+			config.set("group"+(i++)+".name",set.getValue().getName());
 		}
 		save();
 	}

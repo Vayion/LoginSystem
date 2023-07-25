@@ -109,7 +109,7 @@ public class InspectCmd implements CommandExecutor {
 		sender.sendMessage(ChatColor.YELLOW+"------------"+
 				ChatColor.RESET+
 				(groups.isEmpty()?" \nUser is in no groups.":
-				groups.stream().map(g->g.getName()).reduce("\n ",String::concat)));
+				groups.stream().map(g->g.getName()+"\n").reduce("",String::concat)));
 		sender.sendMessage(ChatColor.YELLOW+"------------");
 		if(profile.isOccupied()) {
 			Player player = main.getIDMain().getPlayerByID(profile.getID());

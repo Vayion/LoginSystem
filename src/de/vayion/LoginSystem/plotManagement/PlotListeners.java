@@ -2,6 +2,7 @@ package de.vayion.LoginSystem.plotManagement;
 
 import java.util.ArrayList;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -20,6 +21,11 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketEntityEvent;
+import org.bukkit.event.player.PlayerBucketEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
+import org.bukkit.event.player.PlayerBucketFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTakeLecternBookEvent;
 import org.bukkit.event.world.StructureGrowEvent;
@@ -324,6 +330,60 @@ public class PlotListeners implements Listener {
 		}
 	}
 
+	
+	@EventHandler
+	public void onBucketFill(PlayerBucketFillEvent event) {
+		onBucketUse(event);
+	}
+	
+	@EventHandler
+	public void onBucketFill(PlayerBucketEmptyEvent event) {
+		onBucketUse(event);
+	}
+	
+	@EventHandler
+	public void onBucketFish(PlayerBucketEntityEvent event) {
+		Bukkit.broadcastMessage("JHIDHAIOSdjüA");
+		Player player = event.getPlayer();
+		if (players.contains(player)) {
+			return;
+		}
+		if (player != null) {
+			if (main.getIDMain().playerIsLoggedIn(player)) {
+				if (player.getLocation().getWorld().equals(main.getPlotManager().getPlotWorld())) {
+					if (!main.getIDMain().isAllowed(event.getEntity().getLocation(), event.getPlayer())) {
+						event.setCancelled(true);
+						player.sendMessage(
+								ChatColor.RED + "Du musst auf deinem eigenen Grundstück stehen um dies zu tun.");
+					}
+				}
+			} else {
+				event.setCancelled(true);
+			}
+		}
+	}
+	
+	private void onBucketUse(PlayerBucketEvent event) {
+		Bukkit.broadcastMessage("JHIDHAIOSdjüA");
+		Player player = event.getPlayer();
+		if (players.contains(player)) {
+			return;
+		}
+		if (player != null) {
+			if (main.getIDMain().playerIsLoggedIn(player)) {
+				if (player.getLocation().getWorld().equals(main.getPlotManager().getPlotWorld())) {
+					if (!main.getIDMain().isAllowed(event.getBlock().getLocation(), event.getPlayer())) {
+						event.setCancelled(true);
+						player.sendMessage(
+								ChatColor.RED + "Du musst auf deinem eigenen Grundstück stehen um dies zu tun.");
+					}
+				}
+			} else {
+				event.setCancelled(true);
+			}
+		}
+	}
+	 
 	public boolean toggleEdit(Player player) {
 		if (players.contains(player)) {
 			players.remove(player);

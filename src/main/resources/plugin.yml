@@ -1,0 +1,39 @@
+name: LoginSystem
+version: '${version}'
+main: de.vayion.LoginSystem.Main
+api-version: '1.16'
+author: Vayion
+description: A System to manage different Player Profiles on a Cracked Minecraft Server
+
+depend: [Multiverse-Core]
+
+commands:
+  login:
+  logout:
+  listUsers:
+  plot:
+  user:
+  kaufen:
+  stadt:
+  farmwelt:
+  setlocation:
+  loglist:
+  inspect:
+  toggleedit:
+  finden:
+  group:
+  zufall:
+
+permissions:
+  login.*:
+    children:
+      login.admin: true
+      login.plotadmin: true
+      login.edit: true
+
+  login.admin:
+    description: ''
+  login.plotadmin:
+    description: ''
+  login.edit:
+    description: ''

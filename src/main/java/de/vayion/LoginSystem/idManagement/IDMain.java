@@ -2,29 +2,29 @@ package de.vayion.LoginSystem.idManagement;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 
+import de.vayion.LoginSystem.playerManagement.PlayerWrapper;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import de.vayion.LoginSystem.Main;
-import de.vayion.LoginSystem.playerManagement.Element;
-import de.vayion.LoginSystem.playerManagement.End;
 import de.vayion.LoginSystem.plotManagement.Plot;
 
 public class IDMain {
 	
 	private Main main;
 	private ArrayList<UserProfile> users;
-	private Element first;
+
+	private HashMap<Player, PlayerWrapper> players;
 	
 	private File dir;
 	
 	public IDMain(Main main) {
 		this.main = main;
 		users = new ArrayList<UserProfile>();
-		first = new End();
+		players = new HashMap<>();
 		
 		dir = new File(main.getDataFolder().getPath()+System.getProperty("file.separator")+"users");
 		dir.mkdir();
@@ -32,11 +32,11 @@ public class IDMain {
 	}
 	
 	public void addPlayer(Player player) {
-		first = first.addPlayer(player);
+		players.put(player, null);
 	}
 	
 	public void removePlayer(Player player) {
-		first = first.removePlayer(player);
+		players.remove(player);
 	}
 	
 	public void addNewUser(String name) {
@@ -72,13 +72,13 @@ public class IDMain {
 	}
 	
 	public void logoutAll() {
-		first.logoutAll();
+		players.forEach((a,b)->b.logout());
 	}
 	
 	/**
 	 * called by File Manager to add already existing users
 	 * @param name Name of User
-	 * @param 6 digit ID of user
+	 * @param id 6-digit ID of user
 	 */
 	public void addUser(String name, String id) {
 		users.add(new UserProfile(name, id, this));
@@ -87,7 +87,7 @@ public class IDMain {
 	/**
 	 * called by File Manager to add already existing Admins
 	 * @param name Name of Admin
-	 * @param 6 digit ID of Admin
+	 * @param id 6-digit ID of Admin
 	 */
 	public void addAdmin(String name, String id) {
 		users.add(new AdminProfile(name, id, this));
@@ -100,13 +100,13 @@ public class IDMain {
 	 */
 	public void login(String id, Player player) {
 		UserProfile profile = null;
-		for(int i = 0; i<users.size(); i++) {
-			if(users.get(i).getID().equals(id)) {
-				profile = users.get(i);
-			}
-		}
+        for (UserProfile user : users) {
+            if (user.getID().equals(id)) {
+                profile = user;
+            }
+        }
 		if(profile != null) {
-			if(first.login(player, profile)) {
+			if(players.get(player).login(profile)) {
 				player.sendMessage(ChatColor.GREEN+"Du hast dich erfolgreich als "+profile.getName()+" eingeloggt.");
 			}
 		} else {
@@ -120,7 +120,7 @@ public class IDMain {
 	 * @param player player profile that is supposed to be logged out
 	 */
 	public void logout(Player player) {
-		if(first.logout(player)) {
+		if(players.get(player).logout()) {
 			player.sendMessage(ChatColor.GREEN+"Du hast dich erfolgreich ausgeloggt.");
 		} else {
 			player.sendMessage(ChatColor.GRAY+"Du musst dich einloggen um dies zu tun.");
@@ -128,10 +128,10 @@ public class IDMain {
 	}
 	
 	public boolean isAllowed(Location loc, Player player) {
-		return first.isAllowed(loc, player);
+		return players.get(player).isAllowed(loc);
 	}
 	public boolean isInBorders(Location loc, Player player) {
-		return first.isInBorders(loc, player);
+		return players.get(player).isInBorders(loc);
 	}
 	
 	public void saveRegistry() {
@@ -156,7 +156,7 @@ public class IDMain {
 	 * @return false if player already owns a plot
 	 */
 	public boolean claimPlot(int id, Player player) {
-		return first.claimPlot(id, player);
+		return players.get(player).claimPlot(id, player);
 	}
 	
 	
@@ -166,7 +166,7 @@ public class IDMain {
 	 * @return true if the player is logged in
 	 */
 	public boolean playerIsLoggedIn(Player player) {
-		return first.playerIsLoggedIn(player);
+		return players.get(player).isLoggedIn();
 	}
 	
 	
@@ -177,17 +177,21 @@ public class IDMain {
 	 * @return returns true if both match
 	 */
 	public boolean isOwnPlot(Plot plot, Player player) {
-		return first.isOwnPlot(plot, player);
+		return players.get(player).isOwnPlot(plot, player);
 	}
 	
 	
 	/**
-	 * returns a player who is logged in via given IP. Used for the inspect command
+	 * returns a player who is logged in via given ID. Used for the inspect command
 	 * @param id the ID from the logged in player
 	 * @return the player who logged in with that ID.
 	 */
 	public Player getPlayerByID(String id) {
-		return first.getPlayerByID(id);
+		return players.keySet()
+				.stream()
+				.filter(player -> id.equals(players.get(player).getID()))
+				.findFirst()
+				.orElse(null);
 	}
 	
 	/**
@@ -196,54 +200,45 @@ public class IDMain {
 	 */
 	public ArrayList<String> getAllUsers(boolean includeAdmins){
 		ArrayList<String> list = new ArrayList<String>();
-		for(int i = 0; i<users.size(); i++) {
-			UserProfile user = users.get(i);
-			if((includeAdmins)||(!user.isAdmin()&&!includeAdmins)) {
-				list.add(user.getName() + " - "+ user.getID());
-			}
-		}
+        for (UserProfile user : users) {
+            if ((includeAdmins) || (!user.isAdmin() && !includeAdmins)) {
+                list.add(user.getName() + " - " + user.getID());
+            }
+        }
 		
-		Collections.sort(list, String.CASE_INSENSITIVE_ORDER);
+		list.sort(String.CASE_INSENSITIVE_ORDER);
 		return list;
 	}
 	
 	/**
-	 * returns an Array list with User names sorted after a name
+	 * returns an Array list with UserProfiles' names sorted by alphabetic order
 	 * @return ArrayList<String> with listed users
 	 */
 	public ArrayList<String> searchUsers(String string){
 		ArrayList<String> list = new ArrayList<String>();
-		for(int i = 0; i<users.size(); i++) {
-			if(new String(users.get(i).getName()).toLowerCase().contains(new String(string).toLowerCase()))
-			list.add(users.get(i).getName() + " - "+ users.get(i).getID());
-		}
+        for (UserProfile user : users) {
+            if (user.getName().toLowerCase().contains(string.toLowerCase()))
+                list.add(user.getName() + " - " + user.getID());
+        }
 		
-		Collections.sort(list, String.CASE_INSENSITIVE_ORDER);
+		list.sort(String.CASE_INSENSITIVE_ORDER);
 		return list;
 	}
 	
 	public boolean deleteUser(String id) {
-		if(getUser(id)!=null) {
-			for(int i = 0; i<users.size(); i++) {
-				if(users.get(i).getID().equals(id)) {
-					users.remove(i);
-					return true;
-				}
-			}
-		}
-		return false;
+		return users.removeIf(u->u.getID().equals(id));
 	}
 	public void refreshPlotIDs() {
-		for (int i = 0; i<users.size(); i++) {
-			users.get(i).refreshPlotIDs();
-		}
+        for (UserProfile user : users) {
+            user.refreshPlotIDs();
+        }
 	}
 	
 	public void sendHome(Player player) {
-		first.sendHome(player);
+		players.get(player).sendHome();
 	}
 	
 	public UserProfile getPlayerProfile(Player player) {
-		return first.getPlayerProfile(player);
+		return players.get(player).getPlayerProfile(player);
 	}
 }

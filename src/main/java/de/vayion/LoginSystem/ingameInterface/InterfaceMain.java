@@ -250,7 +250,7 @@ public class InterfaceMain {
 			openMenuInterface(player);
 			return true;
 		}
-		if(inventoryName==null||item==null){
+		if(inventoryName==null){
 			return false;
 		}
 		else if(inventoryName.equals(this.menuInventoryName)) {	

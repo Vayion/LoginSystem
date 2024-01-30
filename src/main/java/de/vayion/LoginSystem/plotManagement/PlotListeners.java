@@ -156,30 +156,6 @@ public class PlotListeners implements Listener {
 				}
 			}
 		}
-		/*
-		 * if((player!=null)&&(event.getClickedBlock()!=null)) {
-		 * if(main.getIDMain().playerIsLoggedIn(player)) {
-		 * if(player.getLocation().getWorld().equals(main.getPlotManager().getPlotWorld(
-		 * ))) { if(!main.getIDMain().isAllowed(event.getClickedBlock().getLocation(),
-		 * event.getPlayer())) { event.setCancelled(true); } Block block1 =
-		 * event.getClickedBlock(); Block block2 =
-		 * block1.getWorld().getBlockAt(block1.getLocation().clone().add(0, -1, 0));
-		 * if(block1.getType().equals(Material.NOTE_BLOCK)) {
-		 * if(block2.getType().equals(Material.BARRIER)) { Plot plot =
-		 * main.getPlotManager().getPlotByCornerBlock(event.getClickedBlock().
-		 * getLocation()); if(plot==null) {player.sendMessage(ChatColor.
-		 * RED+"Dieser Block gehört zu keinem Grundstück. Kontaktiere einen Erzieher falls dies nicht passieren sollte"
-		 * ); return;} if(plot.isClaimed()) { if(main.getIDMain().isOwnPlot(plot,
-		 * player))
-		 * {player.sendMessage(ChatColor.GREEN+"Dieses Grundstück gehört dir schon.");}
-		 * else {
-		 * player.sendMessage(ChatColor.RED+"Dieses Grundstück gehört schon jemanden.");
-		 * } return; } if(main.getIDMain().claimPlot(plot.getID(), player)) {
-		 * player.sendMessage(ChatColor.
-		 * GREEN+"Du hast erfolgreich dieses Grundstück gekauft."); return; } else {
-		 * player.sendMessage(ChatColor.RED+"Du besitzt schon ein Grundstück."); return;
-		 * } } } } } else { event.setCancelled(true); } }
-		 */
 	}
 
 	@EventHandler
@@ -343,7 +319,6 @@ public class PlotListeners implements Listener {
 	
 	@EventHandler
 	public void onBucketFish(PlayerBucketEntityEvent event) {
-		Bukkit.broadcastMessage("JHIDHAIOSdjüA");
 		Player player = event.getPlayer();
 		if (players.contains(player)) {
 			return;

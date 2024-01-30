@@ -91,10 +91,7 @@ public class UserCmd implements CommandExecutor{
 				break;
 			case "search":
 				String search = "";
-				if(args.length==1) {
-					sender.sendMessage(ChatColor.RED+"Wrong amount of args. Please enter a search keyword.");
-					return false;
-				}
+
 				search = args[1];
 				if(args.length > 2) {
 					for(int i = 2; i < args.length; i++) {

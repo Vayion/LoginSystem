@@ -40,24 +40,24 @@ public class LocationManager {
 	}
 	
 	public boolean setCity(Location loc) {
-		if(city==null) {
+		//if(city==null) {
 			city = loc; return true;
-		}
-		return false;
+		//}
+		//return false;
 	}
 
 	public boolean setFarm(Location loc) {
-		if(farm==null) {
+		//if(farm==null) {
 			farm = loc; return true;
-		}
-		return false;
+		//}
+		//return false;
 	}
 
 	public boolean setLobby(Location loc) {
-		if(lobby==null) {
+		//if(lobby==null) {
 			lobby = loc; return true;
-		}
-		return false;
+		//}
+		//return false;
 	}
 	
 	public Location getCity() {

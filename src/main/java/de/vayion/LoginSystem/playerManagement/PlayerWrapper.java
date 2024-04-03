@@ -84,6 +84,25 @@ public class PlayerWrapper {
         }
     }
 
+    public long getCurrency(){
+        return !loggedIn?Long.MIN_VALUE: userProfile.getCurrency();
+    }
+    public void setCurrency(long currency) {
+        if(loggedIn){
+            userProfile.setCurrency(currency);
+        }
+    }
+    public void addCurrency(long currency) {
+        if(loggedIn){
+            userProfile.addCurrency(currency);
+        }
+    }
+    public void subtractCurrency(long currency) {
+        if(loggedIn){
+            userProfile.subtractCurrency(currency);
+        }
+    }
+
     public UserProfile getPlayerProfile(Player player) {
         return userProfile;
     }

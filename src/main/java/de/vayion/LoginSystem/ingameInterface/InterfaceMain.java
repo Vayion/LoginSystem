@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import de.vayion.LoginSystem.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,7 +19,7 @@ import de.vayion.LoginSystem.plotManagement.Plot;
 
 public class InterfaceMain {
 	
-	private ItemStack menu, close, plot, home, farm, sethome, grayGlass, city, visit;
+	private ItemStack menu, close, plot, home, farm, sethome, grayGlass, city, visit, balance;
 	private Main main;
 	private String menuInventoryName = "Menü";
 	private String visitInventoryName = "Besuch-Menü";
@@ -45,11 +46,14 @@ public class InterfaceMain {
 		for (int i = 0; i < inv.getSize(); i++) {
 			inv.setItem(i, grayGlass.clone());
 		}
+		UserProfile profile = main.getIDMain().getPlayerProfile(player);
+		balance = generateBalancePaper(profile);
 		
 		inv.setItem(19, visit);
 		inv.setItem(21, home);
 		inv.setItem(23, farm);
 		inv.setItem(25, city);
+		inv.setItem(13, balance);
 		inv.setItem(40, close);
 		
 		player.openInventory(inv);
@@ -233,6 +237,18 @@ public class InterfaceMain {
 		itemLore.add(id.toString());
 		itemMeta.setLore(itemLore);
 		item.setItemMeta(itemMeta);
+		return item;
+	}
+
+	public static ItemStack generateBalancePaper(UserProfile profile) {
+		ItemStack item;
+		item = new ItemStack(Material.GOLD_BLOCK);
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName(ChatColor.GOLD+"Guthaben");
+		ArrayList<String> list = new ArrayList<String>();
+		list.add(ChatColor.YELLOW+"Dein aktuelles Guthaben beträgt "+ Utils.formatMoney(profile.getCurrency())+".");
+		meta.setLore(list);
+		item.setItemMeta(meta);
 		return item;
 	}
 	

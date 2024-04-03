@@ -23,6 +23,8 @@ commands:
   finden:
   group:
   zufall:
+  shop:
+  balance:
 
 permissions:
   login.*:
@@ -36,4 +38,6 @@ permissions:
   login.plotadmin:
     description: ''
   login.edit:
+    description: ''
+  login.economy:
     description: ''

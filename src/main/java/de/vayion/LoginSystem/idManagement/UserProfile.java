@@ -29,13 +29,14 @@ public class UserProfile {
 
 	protected File file;
 	protected FileConfiguration config;
-	
-	protected int xpLevel;
-	protected float progress;
+
+	protected long currency = 0;
 	
 	/*
 	 * relevant player informatino
 	 */
+	protected int xpLevel;
+	protected float progress;
 	protected boolean occupied;
 	protected Location location;
 	protected double health = -1;
@@ -70,8 +71,8 @@ public class UserProfile {
 		this.iDMain = iDMain;
 		this.name = name;
 		this.id = id;
-		System.out.println("Imported: "+name);
-		System.out.println("Imported: "+id);
+		//System.out.println("Imported: "+name);
+		//System.out.println("Imported: "+id);
 		occupied = false;
 		
 		groups = new ArrayList<>();
@@ -173,6 +174,7 @@ public class UserProfile {
 		config.set("health", health);
 		config.set("hunger", hunger);
 		config.set("spawnpoint", spawnpoint);
+		config.set("balance", currency);
 		int size = inventoryContents.length;
 		config.set("inventory.size", size);
 		for (int i = 0; i < size; i++) {
@@ -191,6 +193,7 @@ public class UserProfile {
 		xpLevel = config.getInt("xpLevel");
 		progress = (float)(config.getDouble("progress"));
 		spawnpoint = (Location) config.get("spawnpoint");
+		currency = config.getLong("balance");
 	
 		int size = config.getInt("inventory.size");
 		inventoryContents = new ItemStack[size];
@@ -286,7 +289,20 @@ public class UserProfile {
 	public ArrayList<Group> getGroups() {
 		return groups;
 	}
-//	public void setGroup(ArrayList<Group> groups) {
+
+	public void setCurrency(long currency) {
+		this.currency = currency;
+	}
+	public void addCurrency(long currency) {
+		this.currency += currency;
+	}
+	public void subtractCurrency(long currency) {
+		this.currency -= currency;
+	}
+	public long getCurrency() {
+		return currency;
+	}
+	//	public void setGroup(ArrayList<Group> groups) {
 //		this.groups = groups;
 //	}
 }

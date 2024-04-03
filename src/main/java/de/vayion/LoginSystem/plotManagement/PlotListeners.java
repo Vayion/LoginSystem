@@ -2,6 +2,7 @@ package de.vayion.LoginSystem.plotManagement;
 
 import java.util.ArrayList;
 
+import de.vayion.LoginSystem.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,13 +22,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.event.player.PlayerBucketEntityEvent;
-import org.bukkit.event.player.PlayerBucketEvent;
-import org.bukkit.event.player.PlayerBucketFillEvent;
-import org.bukkit.event.player.PlayerBucketFishEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerTakeLecternBookEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.BlockInventoryHolder;
 
@@ -339,7 +334,6 @@ public class PlotListeners implements Listener {
 	}
 	
 	private void onBucketUse(PlayerBucketEvent event) {
-		Bukkit.broadcastMessage("JHIDHAIOSdjüA");
 		Player player = event.getPlayer();
 		if (players.contains(player)) {
 			return;
@@ -366,6 +360,14 @@ public class PlotListeners implements Listener {
 		} else {
 			players.add(player);
 			return true;
+		}
+	}
+
+	//@EventHandler
+	public void playerTestEvent(PlayerBedEnterEvent event) {
+		if(!Utils.subtractItem(event.getPlayer(), Material.GOLD_NUGGET, 10)) {
+			event.setCancelled(true);
+			event.getPlayer().sendMessage("Give the Toll!.");
 		}
 	}
 

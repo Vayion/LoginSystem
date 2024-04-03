@@ -1,19 +1,10 @@
 package de.vayion.LoginSystem;
 
+import de.vayion.LoginSystem.commands.*;
+import de.vayion.LoginSystem.shopManagement.ShopListeners;
+import de.vayion.LoginSystem.shopManagement.ShopRegistry;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import de.vayion.LoginSystem.commands.ClaimCmd;
-import de.vayion.LoginSystem.commands.FindCmd;
-import de.vayion.LoginSystem.commands.InspectCmd;
-import de.vayion.LoginSystem.commands.ListCmd;
-import de.vayion.LoginSystem.commands.ListUsersCmd;
-import de.vayion.LoginSystem.commands.LoginCmd;
-import de.vayion.LoginSystem.commands.LogoutCmd;
-import de.vayion.LoginSystem.commands.PlotCmd;
-import de.vayion.LoginSystem.commands.RandomLocationCmd;
-import de.vayion.LoginSystem.commands.SetLocationCmd;
-import de.vayion.LoginSystem.commands.UserCmd;
-import de.vayion.LoginSystem.commands.VisitCommand;
 import de.vayion.LoginSystem.commands.VisitCommand.Target;
 import de.vayion.LoginSystem.groups.GroupMain;
 import de.vayion.LoginSystem.idManagement.IDMain;
@@ -33,6 +24,8 @@ public class Main extends JavaPlugin {
 	private PlotListeners plotListeners;
 	private IDStorageManager idStorageManager;
 	private GroupMain groupMain;
+
+	private ShopRegistry shopRegistry;
 	
 	@Override
 	public void onEnable() {
@@ -56,9 +49,12 @@ public class Main extends JavaPlugin {
 		this.getCommand("logList").setExecutor(new ListCmd(this));
 		this.getCommand("inspect").setExecutor(new InspectCmd(this));
 		this.getCommand("zufall").setExecutor(new RandomLocationCmd(this));
+		this.getCommand("balance").setExecutor(new BalanceCmd(this));
 		
 		this.getServer().getPluginManager().registerEvents(new ConnectionListeners(this), this);
 		this.getServer().getPluginManager().registerEvents(plotListeners = new PlotListeners(this), this);
+
+		shopRegistry = new ShopRegistry(this);
 		locationManager = new LocationManager(this);
 		iDMain = new IDMain(this);
 		plotManager = new PlotManager(this);
@@ -66,7 +62,8 @@ public class Main extends JavaPlugin {
 		interfaceMain = new InterfaceMain(this);
 		idStorageManager = new IDStorageManager(this);
 		groupMain = new GroupMain(this);
-		
+
+		this.getServer().getPluginManager().registerEvents(new ShopListeners(shopRegistry), this);
 	}
 
 	@Override

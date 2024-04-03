@@ -4,14 +4,18 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.type.NoteBlock;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 public class Utils {
 	public enum Mode{
@@ -188,5 +192,52 @@ public class Utils {
 			// we dont handle
 		}
 		
+	}
+
+	public static boolean subtractItem(Player player, Material item, int amount){
+		// Pair<Integer, ItemStack> doesn't want to work, so I will use a Hashmap for the queue
+		PlayerInventory inventory = player.getInventory();
+		HashMap<Integer, ItemStack> queue = new HashMap<>();
+		for (ItemStack stack : inventory) {
+
+			if(stack!= null && stack.getType().equals(item)) {
+				int min = Integer.min(amount, stack.getAmount());
+				queue.put(min, stack);
+				amount -= min;
+			}
+
+			if(amount <= 0) {
+				break;
+			}
+		}
+		if(amount <= 0) {
+			queue.forEach((i,e)->e.setAmount(e.getAmount()-i));
+			return true;
+		}
+		return false;
+	}
+	public static boolean addItem(Player player, ItemStack item){
+		if(player.getInventory().firstEmpty()==-1){
+			return false;
+		}
+		Map<Integer, ItemStack> map = player.getInventory().addItem(item);
+		if(!map.isEmpty()){
+			map.forEach((key, value) -> player.getWorld().dropItem(player.getLocation(), value));
+		}
+		return true;
+	}
+
+
+	public static String hashSign(String signText, Location signLoc) {
+		signText = signText+ signLoc.toString();
+		long hash = 7;
+		for (int i = 0; i < signText.length(); i++) {
+			hash = hash*31 + signText.charAt(i);
+		}
+		return Long.toHexString(hash);
+	}
+
+	public static String formatMoney(long balance) {
+		return balance / 100 + "," + balance % 100+"€";
 	}
 }

@@ -11,7 +11,7 @@ import de.vayion.LoginSystem.Main;
 
 public class RegistryManager {
 
-	Main main;
+	private Main main;
 	
 	private File file;
 	private FileConfiguration config;
@@ -43,9 +43,11 @@ public class RegistryManager {
 		System.out.println("Found "+max+" users.");
 		for(int i = 0; i<max; i++) {
 			if(config.getBoolean("userprofile."+i+".isAdmin")) {
+				System.out.println("Loading userprofile Nr: "+i+".");
 				main.getIDMain().addAdmin(((String) config.get("userprofile."+i+".name")), (String) config.get("userprofile."+i+".ID"));
 			}
 			else {
+				System.out.println("Loading userprofile Nr: "+i+".");
 				main.getIDMain().addUser(((String) config.get("userprofile."+i+".name")), (String) config.get("userprofile."+i+".ID"));
 			}
 		}
@@ -72,5 +74,9 @@ public class RegistryManager {
 			e.printStackTrace();
 			System.out.println("Failed to save to file.");
 		}
+	}
+
+	public Main getMain() {
+		return main;
 	}
 }

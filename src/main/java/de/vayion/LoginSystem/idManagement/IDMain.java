@@ -32,7 +32,7 @@ public class IDMain {
 	}
 	
 	public void addPlayer(Player player) {
-		players.put(player, null);
+		players.put(player, new PlayerWrapper(player));
 	}
 	
 	public void removePlayer(Player player) {
